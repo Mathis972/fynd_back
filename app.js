@@ -1,14 +1,21 @@
-const http = require('http');
+const express = require("express");
 
-const hostname = '127.0.0.1';
-const port = 3000;
+const cors = require('cors');
+const bodyParser = require("body-parser");
+const app = express();
 
-const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello World');
-});
+const port = process.env.PORT || 8000;
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+        extended: true
+    }));
+
+    app.get('/', (req, res) => {
+      res.set('Content-Type', 'text/html');
+      res.send('Hello world !!');
+  });
+
+app.use(router); // Requests processing will be defined in the file router
+app.listen(port, () => console.log('Server app listening on port ' + port));

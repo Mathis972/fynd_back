@@ -5,11 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "prestart": "prisma generate"
   },
-  "author": "",
+  "author": "jbdonin <jean-baptiste.38@hotmail.com>",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1"
-  }
+    "@prisma/client": "^2.21.2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.7",
+    "prisma": "^2.21.2",
+    "router": "^1.3.5",
+    "sequelize": "^6.6.2"
+  },
+  "repository": "https://github.com/Mathis972/fynd_back.git"
 }
