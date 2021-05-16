@@ -4,23 +4,23 @@ faker.locale = "fr";
 const prisma = new PrismaClient()
 
 const main = async () => {
-    // await prisma.raisons_inscriptions.create({
-    //   data : {
-    //     libelle : 'selon feeling'
-    //   }
-    // })
-    // await prisma.raisons_inscriptions.create({
-    //   data : {
-    //     libelle : 'amitié'
-    //   }
-    // })
-    // await prisma.raisons_inscriptions.create({
-    //   data : {
-    //     libelle : 'soirée sans lendemain'
-    //   }
-    // })
+    await prisma.raisons_inscriptions.create({
+      data : {
+        libelle : 'selon feeling'
+      }
+    })
+    await prisma.raisons_inscriptions.create({
+      data : {
+        libelle : 'amitié'
+      }
+    })
+    await prisma.raisons_inscriptions.create({
+      data : {
+        libelle : 'soirée sans lendemain'
+      }
+    })
 
-  for (let index = 0; index < 3; index++) {
+  for (let index = 0; index < 5; index++) {
     await prisma.utilisateurs.create({
       data: {
         prenom : faker.name.firstName(),
@@ -32,7 +32,7 @@ const main = async () => {
           create : {
             raison_inscription :{
               connect : {
-                id:2
+                id:Math.floor(Math.random() * 3)+1
               }
             }
           }
@@ -51,7 +51,6 @@ const main = async () => {
         }
       }
     })
-
   }
   for (let index = 0; index < 3; index++) {
     //ajouter une conversation par rapport au utilisateur créer
