@@ -6,7 +6,49 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+model utilisateurs {
+  id                Int       @id @default(autoincrement()) @db.UnsignedInt
+  prenom            String    @db.VarChar(50)
+  email             String    @db.VarChar(100)
+  mot_de_passe      String    @db.VarChar(100)
+  date_de_naissance DateTime? @db.Date
+  biographie        String?   @db.Text
+  createdAt         DateTime? @default(now()) @db.Timestamp(0)
+  updated_date      DateTime? @default(now()) @db.Timestamp(0)
+  photo_utilisateur photos_utilisateurs[]
+  lri liaisons_raisons_inscriptions[]
+  conversations conversations[]@relation("utilisateur1")
+  conversations2 conversations[]@relation("utilisateur2")
+  message messages[]
 
+}
+model photos_utilisateurs {
+  id                Int       @id @default(autoincrement()) @db.UnsignedInt
+  photo_url         String?   @db.Text
+  fk_utilisateur_id Int       @db.UnsignedInt
+  est_photo_profil  Boolean?
+  createdAt         DateTime? @default(now()) @db.Timestamp(0)
+  updated_date      DateTime? @default(now()) @db.Timestamp(0)
+  utilisateur      utilisateurs @relation(fields: [fk_utilisateur_id],references:[id])
+}
+model raisons_inscriptions {
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
+  libelle      String?   @db.VarChar(100)
+  createdAt         DateTime? @default(now()) @db.Timestamp(0)
+  updated_date      DateTime? @default(now()) @db.Timestamp(0)
+  lri liaisons_raisons_inscriptions[]
+}
+
+model liaisons_raisons_inscriptions {
+  id                       Int                @id @default(autoincrement()) @db.UnsignedInt
+  fk_utilisateur_id        Int                @db.UnsignedInt
+  fk_raison_inscription_id Int                @db.UnsignedInt
+  createdAt         DateTime?                 @default(now()) @db.Timestamp(0)
+  updated_date      DateTime?                 @default(now()) @db.Timestamp(0)
+  utilisateur       utilisateurs              @relation(fields: [fk_utilisateur_id],references:[id])
+  raison_inscription raisons_inscriptions     @relation(fields: [fk_raison_inscription_id],references:[id])
+
+}
 model conversations {
   id                  Int       @id @default(autoincrement()) @db.UnsignedInt
   fk_utilisateur1_id  Int       @db.UnsignedInt
@@ -17,20 +59,9 @@ model conversations {
   date_enregistre     DateTime? @db.Date
   created_date        DateTime? @db.Date
   updated_date        DateTime? @db.Date
-
-  @@index([fk_utilisateur1_id], name: "fk_utilisateur1_id")
-  @@index([fk_utilisateur2_id], name: "fk_utilisateur2_id")
-}
-
-model liaisons_raisons_inscriptions {
-  id                       Int       @id @default(autoincrement()) @db.UnsignedInt
-  fk_utilisateur_id        Int       @db.UnsignedInt
-  fk_raison_inscription_id Int       @db.UnsignedInt
-  created_date             DateTime? @db.Date
-  updated_date             DateTime? @db.Date
-
-  @@index([fk_raison_inscription_id], name: "fk_raison_inscription_id")
-  @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
+  utilisateurs1      utilisateurs @relation("utilisateur1",fields: [fk_utilisateur1_id],references:[id])
+  utilisateur2      utilisateurs @relation("utilisateur2",fields: [fk_utilisateur2_id],references:[id])
+  message messages[]
 }
 
 model messages {
@@ -40,65 +71,87 @@ model messages {
   fk_conversation_id Int       @db.UnsignedInt
   created_date       DateTime? @db.Date
   updated_date       DateTime? @db.Date
+    utilisateur      utilisateurs  @relation(fields: [fk_utilisateur_id],references:[id])
+    conversation     conversations  @relation(fields: [fk_conversation_id],references:[id])
 
-  @@index([fk_conversation_id], name: "fk_conversation_id")
-  @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
 }
+// model liaisons_raisons_inscriptions {
+//   id                       Int       @id @default(autoincrement()) @db.UnsignedInt
+//   fk_utilisateur_id        Int       @db.UnsignedInt
+//   fk_raison_inscription_id Int       @db.UnsignedInt
+//   created_date             DateTime? @db.Date
+//   updated_date             DateTime? @db.Date
 
-model photos_utilisateurs {
-  id                Int       @id @default(autoincrement()) @db.UnsignedInt
-  photo_url         String?   @db.Text
-  fk_utilisateur_id Int       @db.UnsignedInt
-  est_photo_profil  Boolean?
-  created_date      DateTime? @db.Date
-  updated_date      DateTime? @db.Date
+//   @@index([fk_raison_inscription_id], name: "fk_raison_inscription_id")
+//   @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
+// }
 
-  @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
-}
+// model messages {
+//   id                 Int       @id @default(autoincrement()) @db.UnsignedInt
+//   contenu            String?   @db.Text
+//   fk_utilisateur_id  Int       @db.UnsignedInt
+//   fk_conversation_id Int       @db.UnsignedInt
+//   created_date       DateTime? @db.Date
+//   updated_date       DateTime? @db.Date
 
-model questions {
-  id           Int       @id @default(autoincrement()) @db.UnsignedInt
-  message      String?   @db.VarChar(255)
-  created_date DateTime? @db.Date
-  updated_date DateTime? @db.Date
-}
+//   @@index([fk_conversation_id], name: "fk_conversation_id")
+//   @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
+// }
 
-model raisons_inscriptions {
-  id           Int       @id @default(autoincrement()) @db.UnsignedInt
-  libelle      String?   @db.VarChar(100)
-  created_date DateTime? @db.Date
-  updated_date DateTime? @db.Date
-}
+// model photos_utilisateurs {
+//   id                Int       @id @default(autoincrement()) @db.UnsignedInt
+//   photo_url         String?   @db.Text
+//   fk_utilisateur_id Int       @db.UnsignedInt
+//   est_photo_profil  Boolean?
+//   created_date      DateTime? @db.Date
+//   updated_date      DateTime? @db.Date
 
-model reponses {
-  id              Int       @id @default(autoincrement()) @db.UnsignedInt
-  fk_question_id  Int       @db.UnsignedInt
-  message_reponse String?   @db.VarChar(255)
-  icon            String?   @db.VarChar(30)
-  created_date    DateTime? @db.Date
-  updated_date    DateTime? @db.Date
+//   @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
+// }
 
-  @@index([fk_question_id], name: "fk_question_id")
-}
+// model questions {
+//   id           Int       @id @default(autoincrement()) @db.UnsignedInt
+//   message      String?   @db.VarChar(255)
+//   created_date DateTime? @db.Date
+//   updated_date DateTime? @db.Date
+// }
 
-model reponses_utilisateurs {
-  id                Int       @id @default(autoincrement()) @db.UnsignedInt
-  fk_utilisateur_id Int       @db.UnsignedInt
-  fk_reponse_id     Int       @db.UnsignedInt
-  created_date      DateTime? @db.Date
-  updated_date      DateTime? @db.Date
+// model raisons_inscriptions {
+//   id           Int       @id @default(autoincrement()) @db.UnsignedInt
+//   libelle      String?   @db.VarChar(100)
+//   created_date DateTime? @db.Date
+//   updated_date DateTime? @db.Date
+// }
 
-  @@index([fk_reponse_id], name: "fk_reponse_id")
-  @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
-}
+// model reponses {
+//   id              Int       @id @default(autoincrement()) @db.UnsignedInt
+//   fk_question_id  Int       @db.UnsignedInt
+//   message_reponse String?   @db.VarChar(255)
+//   icon            String?   @db.VarChar(30)
+//   created_date    DateTime? @db.Date
+//   updated_date    DateTime? @db.Date
 
-model utilisateurs {
-  id                Int       @id @default(autoincrement()) @db.UnsignedInt
-  prenom            String    @db.VarChar(50)
-  email             String    @db.VarChar(100)
-  mot_de_passe      String    @db.VarChar(100)
-  date_de_naissance DateTime? @db.Date
-  biographie        String?   @db.Text
-  createdAt         DateTime? @default(now()) @db.Timestamp(0)
-  updated_date      DateTime? @default(now()) @db.Timestamp(0)
-}
+//   @@index([fk_question_id], name: "fk_question_id")
+// }
+
+// model reponses_utilisateurs {
+//   id                Int       @id @default(autoincrement()) @db.UnsignedInt
+//   fk_utilisateur_id Int       @db.UnsignedInt
+//   fk_reponse_id     Int       @db.UnsignedInt
+//   created_date      DateTime? @db.Date
+//   updated_date      DateTime? @db.Date
+
+//   @@index([fk_reponse_id], name: "fk_reponse_id")
+//   @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
+// }
+
+// model utilisateurs {
+//   id                Int       @id @default(autoincrement()) @db.UnsignedInt
+//   prenom            String    @db.VarChar(50)
+//   email             String    @db.VarChar(100)
+//   mot_de_passe      String    @db.VarChar(100)
+//   date_de_naissance DateTime? @db.Date
+//   biographie        String?   @db.Text
+//   createdAt         DateTime? @default(now()) @db.Timestamp(0)
+//   updated_date      DateTime? @default(now()) @db.Timestamp(0)
+// }
