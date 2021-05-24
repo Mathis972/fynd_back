@@ -2,12 +2,46 @@ const express=require('express')
 const router=express.Router()
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const jwt = require('jsonwebtoken')
+const jwtUtils = require('../utils/jwt.utils')
 const bcrypt = require('bcrypt')
 
 // Login
 
 router.post('/login', async (req, res) => {
+  const {email,mot_de_passe} = req.body
+  if (email === null  || mot_de_passe === null) return res.status(400).json({'error': 'missing parameters'})
+  const users =  prisma.utilisateurs.findUnique({
+    where:{
+      email: email
+    }
+  })
+  .then(function(userFound){
+        if (userFound){
+          bcrypt.compare(mot_de_passe,userFound.mot_de_passe, function(errBycrypt, resBycrypt){
+            if(resBycrypt)
+            {
+              return res.status(200).json({
+                'userId': userFound.id,
+                'token' : jwtUtils.generateTokenForUser(userFound)
+              })
+            } else
+            {
+            return res.status(403).json({'error': 'invalid password'})
+            }
+            
+          })
+        }
+        else{
+          return res.status(404).json({'error': 'not found in db'})
+
+        }
+
+  })
+  .catch((error) => {
+    return res.status(500).json({'error': 'impossible de verifier user'})
+
+  })
+  
 })
 router.post('/register', async (req, res) => {
 const {prenom, mot_de_passe, email, biographie} = req.body
