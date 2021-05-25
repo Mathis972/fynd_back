@@ -76,6 +76,7 @@ model messages {
 model questions {
   id           Int       @id @default(autoincrement()) @db.UnsignedInt
   message      String?   @db.VarChar(255)
+  reponse             reponses[]
   created_date DateTime? @default(now()) @db.Timestamp(0)
   updated_date DateTime? @default(now()) @db.Timestamp(0)
 }
@@ -94,7 +95,7 @@ model reponses {
   icon            String?   @db.VarChar(30)
   created_date    DateTime? @default(now()) @db.Timestamp(0)
   updated_date    DateTime? @default(now()) @db.Timestamp(0)
-
+  question       questions  @relation(fields: [fk_question_id],references:[id])
   @@index([fk_question_id], name: "fk_question_id")
 }
 

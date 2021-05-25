@@ -21,31 +21,51 @@ const main = async () => {
     })
 
   //questions
+
+
   await prisma.questions.create({
-    data : {
-      message : 'Quel hobby te correspond le mieux ?'
+    data: {
+      message : 'Quel hobby te correspond le mieux ?',
+      reponse : {
+        create : [
+        {
+          message_reponse : 'Voyage'
+        },
+        {
+          message_reponse : 'Sport'
+        },
+        {
+          message_reponse : 'Bien-être'
+        },
+        {
+          message_reponse : 'Films'
+        }
+      ]
+      }
     }
   })
   await prisma.questions.create({
-    data : {
-      message : 'Parmi ces animaux, lequel préfères-tu ?'
+    data: {
+      message : 'Tu gagnes 10 000 euros, tu ...',
+      reponse : {
+        create : [
+        {
+          message_reponse : 'Reverse tout à une association'
+        },
+        {
+          message_reponse : 'Offre un cadeau à tes parents ou à tes proches'
+        },
+        {
+          message_reponse : 'Pars en voyage'
+        },
+        {
+          message_reponse : 'Dépense tout rapidement'
+        }
+      ]
+      }
     }
   })
-  await prisma.questions.create({
-    data : {
-      message : 'Ton petit déjeuner préféré ?'
-    }
-  })
-  await prisma.questions.create({
-    data : {
-      message : 'Tu gagnes 10 000 euros, tu ...'
-    }
-  })
-  await prisma.questions.create({
-    data : {
-      message : 'Quel sport préfères-tu ?'
-    }
-  })
+
 
   for (let index = 0; index <= 5; index++) {
     await prisma.utilisateurs.create({
