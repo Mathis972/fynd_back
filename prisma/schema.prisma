@@ -81,12 +81,6 @@ model messages {
 //   updated_date DateTime? @db.Date
 // }
 
-// model raisons_inscriptions {
-//   id           Int       @id @default(autoincrement()) @db.UnsignedInt
-//   libelle      String?   @db.VarChar(100)
-//   created_date DateTime? @db.Date
-//   updated_date DateTime? @db.Date
-// }
 
 // model reponses {
 //   id              Int       @id @default(autoincrement()) @db.UnsignedInt

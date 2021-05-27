@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
             {
             return res.status(403).json({'error': 'invalid password'})
             }
-            
+
           })
         }
         else{
@@ -41,11 +41,10 @@ router.post('/login', async (req, res) => {
     return res.status(500).json({'error': 'impossible de verifier user'})
 
   })
-  
+
 })
 router.post('/register', async (req, res) => {
-const {prenom, mot_de_passe, email, biographie} = req.body
-let date_de_naissance = req.body.date_de_naissance
+const {prenom, mot_de_passe, email} = req.body
 if (email === null || prenom == null || mot_de_passe === null) return res.status(400).json({'error': 'missing parameters'})
   const users =  prisma.utilisateurs.findUnique({
     where:{
@@ -55,17 +54,15 @@ if (email === null || prenom == null || mot_de_passe === null) return res.status
   .then(function(userFound){
     if (!userFound){
       bcrypt.hash(mot_de_passe, 5, function (err, bcrypytedPassword){
-        date_de_naissance = new Date(date_de_naissance)
         const user =  prisma.utilisateurs.create({
           data: {
             prenom : prenom,
+            est_admin: false,
             email : email,
-            mot_de_passe : bcrypytedPassword,
-            date_de_naissance :date_de_naissance,
-            biographie : biographie,
+            mot_de_passe : bcrypytedPassword
           },
         }).then( function(newUser){
-          return res.status(201).json({'userId': user.id})
+          return res.status(201).json({'userId': newUser.id})
         }).catch(function(err){
           return res.status(500).json({'error': 'impossible de verifier user'})
         })
@@ -85,6 +82,9 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const {id} = req.params
   const users = await prisma.utilisateurs.findUnique({
+    include: {
+      photo_utilisateur: true, // Return all fields
+    },
     where:{
       id: parseInt(id)
     }
