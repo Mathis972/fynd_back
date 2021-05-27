@@ -28,4 +28,26 @@ router.post('/', async (req, res) => {
   })
   res.json(post)
 })
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params
+  await prisma.messages.delete({
+    where: {
+      id: parseInt(id),
+    },
+  })
+  res.json(`Message supprimé`)
+})
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { contenu } = req.body
+  const message = await prisma.messages.update({
+    where: {
+      id: parseInt(id),
+    },
+    data: {
+      contenu
+    }
+  })
+  res.json(message)
+})
 module.exports = router
