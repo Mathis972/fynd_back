@@ -4,8 +4,8 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 router.get('/', async (req, res) => {
-  const users = await prisma.reponses.findMany()
-  res.json(users)
+  const reponses = await prisma.reponses.findMany()
+  res.json(reponses)
 })
 
 module.exports=router

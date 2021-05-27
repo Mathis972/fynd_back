@@ -20,9 +20,6 @@ const main = async () => {
       }
     })
 
-  //questions
-
-
   await prisma.questions.create({
     data: {
       message : 'Quel hobby te correspond le mieux ?',
