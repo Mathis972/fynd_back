@@ -18,12 +18,12 @@ router.get('/', async (req, res) => {
 })
 router.post('/', async (req, res) => {
   console.log(req.body)
-  let { photo_url, fk_utilisateur_id, est_photo_profil } = req.body
-  const post = await prisma.utilisateurs.create({
+  let { send_by_user1, contenu, fk_conversation_id } = req.body
+  const post = await prisma.messages.create({
     data: {
-      photo_url,
-      fk_utilisateur_id,
-      est_photo_profil
+      send_by_user1,
+      contenu,
+      fk_conversation_id
     },
   })
   res.json(post)

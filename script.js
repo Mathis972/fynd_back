@@ -23,19 +23,20 @@ app.use("/raisons_inscriptions",require('./routes/raisons_inscriptions'))
 app.use("/photos_utilisateurs",require('./routes/photos_utilisateurs'))
 app.use("/liaisons_raisons_inscriptions",require('./routes/liaisons_raisons_inscriptions'))
 
- const arrayRoom = ['room1','room2','room3']
+ const arrayRoom = 'room3'
  let id_user = ''
 io.on('connection',  (socket) =>{
-  const room = arrayRoom[Math.floor(Math.random() * 3)]
+  let room = arrayRoom
 
   //console.log(socket.rooms);
     socket.on('idLaunch',function (msg) {
     id_user = msg
-    console.log(msg)
+    console.log(id_user)
     socket.join(room);
     const clients2 = io.sockets.adapter.rooms.get(room);
     const clients = io.sockets.adapter.rooms.get(room).size;
 
+    console.log(clients2)
     if (clients === 1){
       socket.join(room);
     } else if (clients === 2) {
@@ -46,12 +47,22 @@ io.on('connection',  (socket) =>{
       console.log(clients2)
     }
       console.log(`Connecté à la room  ${room}`)
+    })
     socket.on('message', (msg) =>{
       console.log('jjj'+ id_user)
       io.to(room).emit('message', msg);
       console.log('message: ' + msg);
     })
-  })
+    socket.on('joinRoom',(data) =>{
+      socket.leave(room);
+      const clients1 = io.sockets.adapter.rooms.get(room);
+      console.log(clients1)
+      console.log(data)
+      room = data
+      socket.join(room)
+      const clients2 = io.sockets.adapter.rooms.get(room);
+      console.log(clients2)
+    })
   //socket.emit('id',socket.id);
   // socket.on('message', (msg) =>{
   //   console.log('jjj'+ id_user)
