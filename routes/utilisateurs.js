@@ -91,6 +91,7 @@ router.get('/:id', async (req, res) => {
   })
   res.json(users)
 })
+
 // supprimer un utilisateur selon l'id
 router.delete('/:id', async (req, res) => {
   const { id } = req.params
@@ -144,6 +145,21 @@ router.delete('/:id', async (req, res) => {
   res.json(`l'utilisateurs ${users.prenom} est supprimé`)
 })
 // ajouter un utilisateur
+router.post('/', async (req, res) => {
+  console.log(req.body)
+  let { prenom, email, mot_de_passe, date_de_naissance, biographie } = req.body
+  date_de_naissance = new Date(date_de_naissance)
+  const post = await prisma.utilisateurs.create({
+    data: {
+      prenom,
+      email,
+      mot_de_passe,
+      date_de_naissance,
+      biographie,
+    },
+  })
+  res.json(post)
+})
 //modifier un utilisateur selon l'id
 router.put('/:id', async (req, res) => {
   const { id } = req.params
