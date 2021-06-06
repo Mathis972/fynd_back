@@ -90,6 +90,7 @@ router.get('/:id', async (req, res) => {
   })
   res.json(users)
 })
+
 // supprimer un utilisateur selon l'id
 router.delete('/:id', async (req, res) => {
   const { id } = req.params

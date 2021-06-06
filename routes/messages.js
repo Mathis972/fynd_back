@@ -9,22 +9,56 @@ router.get('/', async (req, res) => {
     const messages = await prisma.messages.findMany({
       where: {
         fk_conversation_id: conversation_id
-      }
+      },
     })
     return res.json(messages)
   }
-  const messages = await prisma.messages.findMany()
+  const messages = await prisma.messages.findMany({
+    include :{
+      conversation:{
+        select:{
+          fk_utilisateur1_id:true,
+          fk_utilisateur2_id:true
+        }
+      }
+    }
+  })
   res.json(messages)
+})
+router.get('/:id', async (req, res) => {
+  const {id} = req.params
+  const users = await prisma.messages.findUnique({
+    include: {
+      conversation:{
+        select:{
+          fk_utilisateur1_id:true,
+          fk_utilisateur2_id:true
+        } // Return all fields
+    }
+  },
+    where:{
+      id: parseInt(id)
+    }
+  })
+  res.json(users)
 })
 router.post('/', async (req, res) => {
   console.log(req.body)
-  let { photo_url, fk_utilisateur_id, est_photo_profil } = req.body
-  const post = await prisma.utilisateurs.create({
+  let { send_by_user1, contenu, fk_conversation_id } = req.body
+  const post = await prisma.messages.create({
     data: {
-      photo_url,
-      fk_utilisateur_id,
-      est_photo_profil
+      send_by_user1,
+      contenu,
+      fk_conversation_id
     },
+    include: {
+      conversation:{
+        select:{
+          fk_utilisateur1_id:true,
+          fk_utilisateur2_id:true
+        } // Return all fields
+    }
+  }
   })
   res.json(post)
 })
