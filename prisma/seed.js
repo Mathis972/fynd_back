@@ -20,6 +20,50 @@ const main = async () => {
       }
     })
 
+  await prisma.questions.create({
+    data: {
+      message : 'Quel hobby te correspond le mieux ?',
+      reponse : {
+        create : [
+        {
+          message_reponse : 'Voyage'
+        },
+        {
+          message_reponse : 'Sport'
+        },
+        {
+          message_reponse : 'Bien-être'
+        },
+        {
+          message_reponse : 'Films'
+        }
+      ]
+      }
+    }
+  })
+  await prisma.questions.create({
+    data: {
+      message : 'Tu gagnes 10 000 euros, tu ...',
+      reponse : {
+        create : [
+        {
+          message_reponse : 'Reverse tout à une association'
+        },
+        {
+          message_reponse : 'Offre un cadeau à tes parents ou à tes proches'
+        },
+        {
+          message_reponse : 'Pars en voyage'
+        },
+        {
+          message_reponse : 'Dépense tout rapidement'
+        }
+      ]
+      }
+    }
+  })
+
+
   for (let index = 0; index <= 5; index++) {
     await prisma.utilisateurs.create({
       data: {

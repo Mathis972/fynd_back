@@ -74,32 +74,33 @@ model messages {
 }
 
 
-// model questions {
-//   id           Int       @id @default(autoincrement()) @db.UnsignedInt
-//   message      String?   @db.VarChar(255)
-//   created_date DateTime? @db.Date
-//   updated_date DateTime? @db.Date
-// }
+model questions {
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
+  message      String?   @db.VarChar(255)
+  reponse             reponses[]
+  created_date DateTime? @default(now()) @db.Timestamp(0)
+  updated_date DateTime? @default(now()) @db.Timestamp(0)
+}
 
 
-// model reponses {
-//   id              Int       @id @default(autoincrement()) @db.UnsignedInt
-//   fk_question_id  Int       @db.UnsignedInt
-//   message_reponse String?   @db.VarChar(255)
-//   icon            String?   @db.VarChar(30)
-//   created_date    DateTime? @db.Date
-//   updated_date    DateTime? @db.Date
+model reponses {
+  id              Int       @id @default(autoincrement()) @db.UnsignedInt
+  fk_question_id  Int       @db.UnsignedInt
+  message_reponse String?   @db.VarChar(255)
+  icon            String?   @db.VarChar(30)
+  created_date    DateTime? @default(now()) @db.Timestamp(0)
+  updated_date    DateTime? @default(now()) @db.Timestamp(0)
+  question       questions  @relation(fields: [fk_question_id],references:[id])
+  @@index([fk_question_id], name: "fk_question_id")
+}
 
-//   @@index([fk_question_id], name: "fk_question_id")
-// }
-
-// model reponses_utilisateurs {
-//   id                Int       @id @default(autoincrement()) @db.UnsignedInt
-//   fk_utilisateur_id Int       @db.UnsignedInt
-//   fk_reponse_id     Int       @db.UnsignedInt
-//   created_date      DateTime? @db.Date
-//   updated_date      DateTime? @db.Date
-//   @@index([fk_reponse_id], name: "fk_reponse_id")
-//   @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
-// }
+model reponses_utilisateurs {
+  id                Int       @id @default(autoincrement()) @db.UnsignedInt
+  fk_utilisateur_id Int       @db.UnsignedInt
+  fk_reponse_id     Int       @db.UnsignedInt
+  created_date      DateTime? @default(now()) @db.Timestamp(0)
+  updated_date      DateTime? @default(now()) @db.Timestamp(0)
+  @@index([fk_reponse_id], name: "fk_reponse_id")
+  @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
+}
 
