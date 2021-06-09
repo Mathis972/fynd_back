@@ -9,7 +9,8 @@ datasource db {
 model utilisateurs {
   id                Int       @id @default(autoincrement()) @db.UnsignedInt
   prenom            String    @db.VarChar(50)
-  email             String    @db.VarChar(100)
+  email             String    @unique
+  est_admin         Boolean
   mot_de_passe      String    @db.VarChar(100)
   date_de_naissance DateTime? @db.Date
   biographie        String?   @db.Text
@@ -81,12 +82,6 @@ model questions {
   updated_date DateTime? @default(now()) @db.Timestamp(0)
 }
 
-// model raisons_inscriptions {
-//   id           Int       @id @default(autoincrement()) @db.UnsignedInt
-//   libelle      String?   @db.VarChar(100)
-//   created_date DateTime? @db.Date
-//   updated_date DateTime? @db.Date
-// }
 
 model reponses {
   id              Int       @id @default(autoincrement()) @db.UnsignedInt
