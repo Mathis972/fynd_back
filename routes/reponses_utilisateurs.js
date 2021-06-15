@@ -22,10 +22,13 @@ router.post('/', async (req, res) => {
   const reponses = req.body.reponses_utilisateur
   const id = req.body.id
   reponses.forEach(reponse => {
+    console.log(reponse)
     if(reponse) {
-      create_reponses_utilisateurs(3, reponse)
+      create_reponses_utilisateurs(id, reponse)
+      console.log(reponse)
     }
   });
+  res.json('fait')
 });
 
 module.exports=router
