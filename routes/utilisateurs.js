@@ -43,8 +43,10 @@ router.post('/login', async (req, res) => {
 
 })
 router.post('/register', async (req, res) => {
-  const { prenom, mot_de_passe, email } = req.body
-  if (email === null || prenom == null || mot_de_passe === null) return res.status(400).json({ 'error': 'missing parameters' })
+  const { prenom, mot_de_passe, email, date_de_naissance } = req.body
+  if (email === null || prenom == null || mot_de_passe === null || date_de_naissance == null ) return res.status(400).json({ 'error': 'missing parameters' })
+  date_de_naissance = new Date(date_de_naissance)
+
   const users = prisma.utilisateurs.findUnique({
     where: {
       email: email
@@ -56,6 +58,7 @@ router.post('/register', async (req, res) => {
           const user = prisma.utilisateurs.create({
             data: {
               prenom: prenom,
+              date_de_naissance: date_de_naissance,
               est_admin: false,
               email: email,
               mot_de_passe: bcrypytedPassword

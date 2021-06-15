@@ -20,9 +20,10 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const reponses = req.body.reponses_utilisateur
+  const id = req.body.id
   reponses.forEach(reponse => {
     if(reponse) {
-      create_reponses_utilisateurs(3, reponse)
+      create_reponses_utilisateurs(id, reponse)
     }
   });
 });
