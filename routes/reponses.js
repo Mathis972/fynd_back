@@ -4,6 +4,18 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 router.get('/', async (req, res) => {
+  if (req.query.question_id) {
+    const question_id = parseInt(req.query.question_id)
+    const reponses = await prisma.reponses.findMany({
+      include: {
+        question: true
+      },
+      where: {
+        fk_question_id: question_id
+      }
+    })
+    return res.json(reponses)
+  }
   const reponses = await prisma.reponses.findMany()
   res.json(reponses)
 })
