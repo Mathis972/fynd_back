@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
   const id = req.body.id
   reponses.forEach(reponse => {
     if(reponse) {
-      create_reponses_utilisateurs(id, reponse)
+      create_reponses_utilisateurs(3, reponse)
     }
   });
 });
