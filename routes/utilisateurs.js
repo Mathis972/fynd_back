@@ -43,7 +43,8 @@ router.post('/login', async (req, res) => {
 
 })
 router.post('/register', async (req, res) => {
-  const { prenom, mot_de_passe, email, date_de_naissance } = req.body
+  const { prenom, mot_de_passe, email } = req.body
+  let date_de_naissance = req.body.date_de_naissance
   if (email === null || prenom == null || mot_de_passe === null || date_de_naissance == null ) return res.status(400).json({ 'error': 'missing parameters' })
   date_de_naissance = new Date(date_de_naissance)
 
