@@ -56,8 +56,8 @@ model conversations {
   ajout_utilisateurs1 Boolean?
   ajout_utilisateurs2 Boolean?
   date_enregistre     DateTime? @db.Date
-  created_date        DateTime? @db.Date
-  updated_date        DateTime? @db.Date
+  createdAt         DateTime? @default(now()) @db.Timestamp(0)
+  updated_date      DateTime? @default(now()) @db.Timestamp(0)
   utilisateurs1       utilisateurs @relation("utilisateur1",fields: [fk_utilisateur1_id],references:[id])
   utilisateur2        utilisateurs @relation("utilisateur2",fields: [fk_utilisateur2_id],references:[id])
   message             messages[]
@@ -68,8 +68,8 @@ model messages {
   send_by_user1      Boolean
   contenu            String?   @db.Text
   fk_conversation_id Int       @db.UnsignedInt
-  created_date       DateTime? @db.Date
-  updated_date       DateTime? @db.Date
+  createdAt         DateTime? @default(now()) @db.Timestamp(0)
+  updated_date      DateTime? @default(now()) @db.Timestamp(0)
   conversation       conversations  @relation(fields: [fk_conversation_id],references:[id])
 }
 
@@ -81,8 +81,6 @@ model questions {
   created_date DateTime? @default(now()) @db.Timestamp(0)
   updated_date DateTime? @default(now()) @db.Timestamp(0)
 }
-
-
 model reponses {
   id              Int       @id @default(autoincrement()) @db.UnsignedInt
   fk_question_id  Int       @db.UnsignedInt

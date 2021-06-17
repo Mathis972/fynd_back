@@ -27,12 +27,10 @@ router.post('/login', async (req, res) => {
           } else {
             return res.status(403).json({ 'error': 'invalid password' })
           }
-
         })
       }
       else {
-        return res.status(404).json({ 'error': 'not found in db' })
-
+        return res.status(404).json({ 'error': 'Email ou mot de passe non valide' })
       }
 
     })
