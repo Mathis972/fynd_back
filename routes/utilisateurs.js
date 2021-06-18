@@ -5,6 +5,22 @@ const prisma = new PrismaClient()
 const jwtUtils = require('../utils/jwt.utils')
 const bcrypt = require('bcrypt')
 
+//match
+router.get('/match/:id', async (req, res) => {
+  const { id } = req.params
+  const matches = await prisma.$queryRaw(`select ru1.fk_utilisateur_id, ru2.fk_utilisateur_id, count(ru2.fk_utilisateur_id) as numberOfMatch
+from reponses_utilisateurs ru1
+join reponses_utilisateurs ru2 on ru1.fk_reponse_id = ru2.fk_reponse_id
+where ru1.fk_utilisateur_id = ${id} and ru1.fk_utilisateur_id <> ru2.fk_utilisateur_id
+and NOT EXISTS (
+    SELECT cv.id
+    FROM conversations as cv
+    WHERE (ru1.fk_utilisateur_id = cv.fk_utilisateur1_id AND ru2.fk_utilisateur_id = cv.fk_utilisateur2_id) OR (ru2.fk_utilisateur_id = cv.fk_utilisateur1_id AND ru1.fk_utilisateur_id = cv.fk_utilisateur2_id))
+GROUP BY ru2.fk_utilisateur_id
+ORDER by ru1.fk_utilisateur_id, ru2.fk_utilisateur_id
+LIMIT 20`)
+  return res.json(matches)
+})
 // Login
 
 router.post('/login', async (req, res) => {
@@ -43,7 +59,7 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
   const { prenom, mot_de_passe, email } = req.body
   let date_de_naissance = req.body.date_de_naissance
-  if (email === null || prenom == null || mot_de_passe === null || date_de_naissance == null ) return res.status(400).json({ 'error': 'missing parameters' })
+  if (email === null || prenom == null || mot_de_passe === null || date_de_naissance == null) return res.status(400).json({ 'error': 'missing parameters' })
   date_de_naissance = new Date(date_de_naissance)
 
   const users = prisma.utilisateurs.findUnique({
