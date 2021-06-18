@@ -89,6 +89,7 @@ model reponses {
   created_date    DateTime? @default(now()) @db.Timestamp(0)
   updated_date    DateTime? @default(now()) @db.Timestamp(0)
   question       questions  @relation(fields: [fk_question_id],references:[id])
+  reponses_utilisateurs reponses_utilisateurs[]@relation("reponse")
   @@index([fk_question_id], name: "fk_question_id")
 }
 
@@ -98,6 +99,7 @@ model reponses_utilisateurs {
   fk_reponse_id     Int       @db.UnsignedInt
   created_date      DateTime? @default(now()) @db.Timestamp(0)
   updated_date      DateTime? @default(now()) @db.Timestamp(0)
+  reponse       reponses @relation("reponse",fields: [fk_utilisateur_id],references:[id])
   @@index([fk_reponse_id], name: "fk_reponse_id")
   @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
 }
