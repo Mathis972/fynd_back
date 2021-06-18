@@ -20,6 +20,7 @@ model utilisateurs {
   lri liaisons_raisons_inscriptions[]
   conversations conversations[]@relation("utilisateur1")
   conversations2 conversations[]@relation("utilisateur2")
+  reponses_utilisateurs reponses_utilisateurs[]@relation("utilisateur")
 }
 model photos_utilisateurs {
   id                Int       @id @default(autoincrement()) @db.UnsignedInt
@@ -100,6 +101,7 @@ model reponses_utilisateurs {
   created_date      DateTime? @default(now()) @db.Timestamp(0)
   updated_date      DateTime? @default(now()) @db.Timestamp(0)
   reponse       reponses @relation("reponse",fields: [fk_utilisateur_id],references:[id])
+  utilisateur       utilisateurs @relation("utilisateur",fields: [fk_utilisateur_id],references:[id])
   @@index([fk_reponse_id], name: "fk_reponse_id")
   @@index([fk_utilisateur_id], name: "fk_utilisateur_id")
 }

@@ -8,6 +8,98 @@ const bcrypt = require('bcrypt')
 //match
 router.get('/match/:id', async (req, res) => {
   const { id } = req.params
+  if (req.query.test) {
+    const resp = await prisma.reponses_utilisateurs.findMany({
+      select: {
+        fk_reponse_id: true
+      },
+      where: {
+        fk_utilisateur_id: parseInt(id)
+      }
+    })
+    const question_arr = resp.map(r => r.fk_reponse_id)
+    // const matches = await prisma.reponses_utilisateurs.groupBy({
+    //   by: ['fk_utilisateur_id'],
+    //   where: {
+    //     fk_reponse_id: { in: question_arr },
+    //     fk_utilisateur_id: { not: parseInt(id) },
+    //   },
+    //   // include: {
+    //   //   utilisateur: {
+    //   //     include: {
+    //   //       conversation: true,
+    //   //       conversation2: true
+    //   //     }
+    //   //   }
+    //   // },
+    //   _count: {
+    //     fk_utilisateur_id: true
+    //   }
+    // })
+    const matches = await prisma.reponses_utilisateurs.findMany({
+      where: {
+        fk_reponse_id: { in: question_arr },
+        fk_utilisateur_id: { not: parseInt(id) },
+        // OR: [
+        //   {
+        //     AND: [
+        //       conversations.fk_utilisateur1_id = fk_utilisateur_id,
+        //       conversations.fk_utilisateur2_id = id,
+        //     ]
+        //   },
+        //   {
+        //     AND: [
+        //       conversations2.fk_utilisateur1_id = id,
+        //       conversations2.fk_utilisateur2_id = fk_utilisateur_id,
+        //     ]
+        //   }
+        // ]
+      },
+      include: {
+        utilisateur: {
+          include: {
+            conversations: true,
+            conversations2: true
+          }
+        }
+      },
+    })
+
+    const convChecked = matches.map((match) => {
+      match.utilisateur.conversations.some((conv) => {
+        if (conv.fk_utilisateur2_id == match.fk_utilisateur_id && conv.fk_utilisateur1_id == id) {
+          return true;
+        }
+      })
+      match.utilisateur.conversations2.some((conv) => {
+        if (conv.fk_utilisateur1_id == match.fk_utilisateur_id && conv.fk_utilisateur2_id == id) {
+          return true;
+        }
+      })
+      return match
+
+    })
+    //recup les count dans un objet
+    let count = {}
+    convChecked.forEach((cv) => {
+      if (count[cv.fk_utilisateur_id]) {
+        count[cv.fk_utilisateur_id] = count[cv.fk_utilisateur_id] + 1
+      } else {
+        count[cv.fk_utilisateur_id] = 1
+      }
+    })
+
+    //transfere en array
+    const groupBy = Object.keys(count).map((obj) => {
+      const numberOfMatch = count[obj]
+      const fk_utilisateur_id = obj
+
+      return { numberOfMatch: numberOfMatch, fk_utilisateur_id: fk_utilisateur_id }
+    })
+
+    return res.json(groupBy)
+
+  }
   const matches = await prisma.$queryRaw(`select ru1.fk_utilisateur_id, ru2.fk_utilisateur_id, count(ru2.fk_utilisateur_id) as numberOfMatch
 from reponses_utilisateurs ru1
 join reponses_utilisateurs ru2 on ru1.fk_reponse_id = ru2.fk_reponse_id
