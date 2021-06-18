@@ -10,6 +10,14 @@ router.get('/', async (req, res) => {
       where: {
         fk_conversation_id: conversation_id
       },
+      include :{
+        conversation:{
+          select:{
+            fk_utilisateur1_id:true,
+            fk_utilisateur2_id:true
+          }
+        }
+      }
     })
     return res.json(messages)
   }
