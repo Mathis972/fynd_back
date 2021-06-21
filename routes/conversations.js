@@ -100,5 +100,19 @@ router.put('/:id', async (req, res) => {
   });
   res.json(conversation)
 })
+router.post('/', async (req, res) => {
+  let { fk_utilisateur1_id, fk_utilisateur2_id } = req.body
+  const conversation = await prisma.conversations.create({
+    data: {
+      fk_utilisateur1_id,
+      fk_utilisateur2_id,
+      est_enregistre:false,
+      ajout_utilisateurs1 :false,
+      ajout_utilisateurs2: false,
+      date_enregistre: null
+    },
+  });
+  res.json(conversation)
+})
 
 module.exports = router
