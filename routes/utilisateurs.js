@@ -112,7 +112,7 @@ FROM
        LEFT JOIN reponses_utilisateurs RU2
            ON RU1.fk_reponse_id = RU2.fk_reponse_id
            AND U2.id = RU2.fk_utilisateur_id
-WHERE U1.id = 10
+WHERE U1.id = ${id}
 GROUP BY U2.id
 ORDER BY numberOfMatch desc`)
   return res.json(matches)
