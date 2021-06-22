@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt')
 
 //match
 router.get('/match/:id', async (req, res) => {
-  // const { id } = req.params
+   const { id } = req.params
   // if (req.query.test) {
   //   const resp = await prisma.reponses_utilisateurs.findMany({
   //     select: {
