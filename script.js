@@ -2,6 +2,10 @@ const express = require("express");
 var bodyParser = require('body-parser')
 const cors = require('cors');
 const app = express()
+const fileUpload = require('express-fileupload')
+path = require('path')
+app.use(fileUpload())
+
 const port = process.env.PORT || 8000;
 var server = app.listen(port);
 const io = require('socket.io')(server, {
@@ -12,7 +16,7 @@ const io = require('socket.io')(server, {
 })
 app.use(express.json())
 app.use(cors());
-
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use("/utilisateurs", require('./routes/utilisateurs'))
 app.use("/conversations", require('./routes/conversations'))
