@@ -37,22 +37,20 @@ io.on('connection', (socket) => {
     const clients2 = io.sockets.adapter.rooms.get(room);
     const clients = io.sockets.adapter.rooms.get(room).size;
 
-    console.log(clients2)
-    if (clients === 1) {
-      socket.join(room);
-    } else if (clients === 2) {
-      socket.join(room);
-    } else { // max two clients
-      console.log("tes la")
-      socket.disconnect()
-      console.log(clients2)
-    }
+    // console.log(clients2)
+    // if (clients === 1) {
+    //   socket.join(room);
+    // } else if (clients === 2) {
+    //   socket.join(room);
+    // } else { // max two clients
+    //   console.log("tes la")
+    //   socket.disconnect()
+    //   console.log(clients2)
+    // }
     console.log(`Connecté à la room  ${room}`)
   })
   socket.on('message', (msg) => {
-    console.log('jjj' + id_user)
     io.to(room).emit('message', msg);
-    console.log('message: ' + msg);
   })
   socket.on('joinRoom', (data) => {
     socket.leave(room);

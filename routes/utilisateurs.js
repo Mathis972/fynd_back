@@ -100,17 +100,31 @@ router.get('/match/:id', async (req, res) => {
   //   return res.json(groupBy)
 
   // }
-  const matches = await prisma.$queryRaw(`select ru1.fk_utilisateur_id, ru2.fk_utilisateur_id, count(ru2.fk_utilisateur_id) as numberOfMatch
-  from reponses_utilisateurs ru1
-  join reponses_utilisateurs ru2 on ru1.fk_reponse_id = ru2.fk_reponse_id
-  where ru1.fk_utilisateur_id = ${id} and ru1.fk_utilisateur_id <> ru2.fk_utilisateur_id
-  and NOT EXISTS (
-      SELECT cv.id
-      FROM conversations as cv
-      WHERE (ru1.fk_utilisateur_id = cv.fk_utilisateur1_id AND ru2.fk_utilisateur_id = cv.fk_utilisateur2_id) OR (ru2.fk_utilisateur_id = cv.fk_utilisateur1_id AND ru1.fk_utilisateur_id = cv.fk_utilisateur2_id))
-  GROUP BY ru2.fk_utilisateur_id
-  ORDER by ru1.fk_utilisateur_id, ru2.fk_utilisateur_id
-  LIMIT 20`)
+  const matches = await prisma.$queryRaw(`SELECT
+  U2.id AS util2,
+  SUM( IF( RU2.fk_utilisateur_id IS NULL, 0, 1 ) ) as numberOfMatch
+FROM
+  utilisateurs U1
+      INNER JOIN utilisateurs U2
+          ON U1.id <> U2.id
+      LEFT JOIN conversations C
+          ON (
+              U1.id = C.fk_utilisateur1_id
+              AND U2.id = C.fk_utilisateur2_id
+          ) OR (
+              U2.id = C.fk_utilisateur1_id
+              AND U1.id = C.fk_utilisateur2_id
+          )
+      INNER JOIN reponses_utilisateurs RU1
+          ON U1.id = RU1.fk_utilisateur_id
+      LEFT JOIN reponses_utilisateurs RU2
+          ON RU1.fk_reponse_id = RU2.fk_reponse_id
+          AND U2.id = RU2.fk_utilisateur_id
+WHERE
+  U1.id = ${id}
+  AND C.id IS NULL
+GROUP BY U2.id
+ORDER BY numberOfMatch desc`)
 //   const matches = await prisma.$queryRaw(`SELECT
 //   U1.id as util1, U2.id AS util2,
 //    SUM( IF( RU2.fk_utilisateur_id IS NULL, 0, 1 ) ) as numberOfMatch
