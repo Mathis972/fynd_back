@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const fs = require('fs');
 
 router.get('/', async (req, res) => {
   const users = await prisma.photos_utilisateurs.findMany()
@@ -22,6 +23,8 @@ router.delete('/:user_id', async (req, res) => {
 
 router.post('/', async (req, res) => {
 const params = req.body
+console.log(req.body)
+console.log(req.files)
 if (!req.files)
     return res.status(422).json('vous n\'avez pas mis de photo')
   const file = req.files.image
@@ -39,7 +42,45 @@ if (!req.files)
           }
         })
         res.json(question)
+    })
+  } else {
+    return res.status(500).json('pas le bon format')
+  }
+})
+router.put('/:id', (req, res) => {
+  const params = req.body
+  const { id } = req.params
 
+
+  var file = req.files.image
+  const file_name = new Date().getTime() + '_' + file.name
+  params.image = `image/${file_name}`
+
+  if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
+    file.mv('public/image/' + file_name, async (err) => {
+      if (err)
+        return res.status(500).json(err)
+
+        const photoOld = await prisma.photos_utilisateurs.findUnique({
+        where:{
+          id: parseInt(id),
+        }
+        })
+        console.log(photoOld)
+        fs.unlink("public/"+photoOld.photo_url,function(err){
+          if(err) throw err;
+          console.log('File deleted!');
+      });
+        const newPhoto = await prisma.photos_utilisateurs.update({
+          where: {
+            id: parseInt(id),
+          },
+          data: {
+            photo_url: params.image
+          }
+        })
+          if (!err) res.json(`update fait`)
+          else console.log(err)
     })
   } else {
     return res.status(500).json('pas le bon format')

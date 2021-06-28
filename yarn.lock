@@ -17,8 +17,8 @@
     semver "^7.3.4"
     tar "^6.1.0"
 
-"@prisma/client@2.23.0":
-  version "2.23.0"
+"@prisma/client@2.25.0":
+  version "2.25.0"
   resolved "https://registry.npmjs.org/@prisma/client/-/client-2.23.0.tgz"
   integrity sha512-xsHdo3+wIH0hJVGfKHYTEKtifStjKH0b5t8t7hV32Fypq6+3uxhAi3F25yxuI4XSHXg21nb7Ha82lNwU/0TERA==
   dependencies:
