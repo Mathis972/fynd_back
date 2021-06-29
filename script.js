@@ -2,9 +2,9 @@ const express = require("express");
 var bodyParser = require('body-parser')
 const cors = require('cors');
 const app = express()
-const fileUpload = require('express-fileupload')
+// const fileUpload = require('express-fileupload')
 path = require('path')
-app.use(fileUpload())
+//app.use(fileUpload())
 
 const port = process.env.PORT || 8000;
 var server = app.listen(port);
