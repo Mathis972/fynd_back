@@ -35,17 +35,17 @@ router.get('/', async (req, res) => {
   res.json(users)
 })
 
-router.delete('/:user_id', async (req, res) => {
-  const { user_id } = req.params
+// router.delete('/:user_id', async (req, res) => {
+//   const { user_id } = req.params
 
-  const photos_utilisateurs = await prisma.photos_utilisateurs.deleteMany({
-    where: {
-      fk_utilisateur_id: parseInt(user_id)
-    }
-  })
-  console.log(photos_utilisateurs)
-  res.json(`les photos de l'utilisateur ${user_id} sont supprimées`)
-})
+//   const photos_utilisateurs = await prisma.photos_utilisateurs.deleteMany({
+//     where: {
+//       fk_utilisateur_id: parseInt(user_id)
+//     }
+//   })
+//   console.log(photos_utilisateurs)
+//   res.json(`les photos de l'utilisateur ${user_id} sont supprimées`)
+// })
 
 // router.post('/', async (req, res) => {
 // const params = req.body
@@ -77,6 +77,7 @@ router.delete('/:user_id', async (req, res) => {
 //Utilisation de aws S3 pour le stockage des photos
 router.post('/', upload.array('upl'), async function (req, res, next) {
   const params = req.body
+  console.log(req.files)
   file = req.files[0]
   console.log(req.files[0].mimetype)
   if (!req.files)
@@ -94,45 +95,26 @@ router.post('/', upload.array('upl'), async function (req, res, next) {
       }
 });
 
-// router.put('/:id', (req, res) => {
-//   const params = req.body
-//   const { id } = req.params
-
-
-//   var file = req.files.image
-//   const file_name = new Date().getTime() + '_' + file.name
-//   params.image = `image/${file_name}`
-
-//   if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
-//     file.mv('public/image/' + file_name, async (err) => {
-//       if (err)
-//         return res.status(500).json(err)
-
-//         const photoOld = await prisma.photos_utilisateurs.findUnique({
-//         where:{
-//           id: parseInt(id),
-//         }
-//         })
-//         console.log(photoOld)
-//         fs.unlink("public/"+photoOld.photo_url,function(err){
-//           if(err) throw err;
-//           console.log('File deleted!');
-//       });
-//         const newPhoto = await prisma.photos_utilisateurs.update({
-//           where: {
-//             id: parseInt(id),
-//           },
-//           data: {
-//             photo_url: params.image
-//           }
-//         })
-//           if (!err) res.json(`update fait`)
-//           else console.log(err)
-//     })
-//   } else {
-//     return res.status(500).json('pas le bon format')
-//   }
-// })
+router.delete('/:id', async function (req, res) {
+  const {id} = req.params
+  const photoOld = await prisma.photos_utilisateurs.findUnique({
+    where:{
+      id: parseInt(id),
+    }
+    })
+    const photo = photoOld.photo_url.replace('https://filefynd.s3.amazonaws.com/', '')
+    var params2 = {  Bucket: 'filefynd', Key: photo };
+    s3.deleteObject(params2, function(err, data) {
+      if (err) console.log(err, err.stack);  // error
+      else     console.log('deleted');                 // deleted
+    });
+  const photos = await prisma.photos_utilisateurs.delete({
+    where: {
+      id: parseInt(id)
+    }
+  })
+res.send('deleted')
+})
 
 router.put('/:id', upload.array('upl'), async function (req, res, next) {
   const params = req.body
