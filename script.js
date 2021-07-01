@@ -31,7 +31,7 @@ app.use("/liaisons_raisons_inscriptions", require('./routes/liaisons_raisons_ins
 const arrayRoom = 'room3'
 let id_user = ''
 io.on('connection', (socket) => {
-  let room = arrayRoom
+  let room = ''
 
   //console.log(socket.rooms);
   socket.on('idLaunch', function (msg) {

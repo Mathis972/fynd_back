@@ -87,15 +87,13 @@ router.delete('/:id', async (req, res) => {
 })
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const {
-    est_enregistre
-  } = req.body
   const conversation = await prisma.conversations.update({
     where: {
       id: parseInt(id)
     },
     data: {
-      est_enregistre
+      ajout_utilisateurs1 : req.body.ajout_utilisateurs1,
+      ajout_utilisateurs2 : req.body.ajout_utilisateurs2,
     }
   });
   res.json(conversation)
@@ -106,7 +104,7 @@ router.post('/', async (req, res) => {
     data: {
       fk_utilisateur1_id,
       fk_utilisateur2_id,
-      est_enregistre:false,
+      est_enregistre:null,
       ajout_utilisateurs1 :false,
       ajout_utilisateurs2: false,
       date_enregistre: null
