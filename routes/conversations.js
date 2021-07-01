@@ -92,6 +92,7 @@ router.put('/:id', async (req, res) => {
       id: parseInt(id)
     },
     data: {
+      est_enregistre: reqreq.body.est_enregistre,
       ajout_utilisateurs1 : req.body.ajout_utilisateurs1,
       ajout_utilisateurs2 : req.body.ajout_utilisateurs2,
     }
