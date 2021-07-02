@@ -7,7 +7,7 @@ module.exports = {
       userId : userData.id
     },JWT_SIGN_SECRET,
     {
-      expiresIn : '1h'
+      expiresIn : '12h'
     })
   }
 }

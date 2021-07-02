@@ -178,6 +178,9 @@ router.post('/login', async (req, res) => {
     })
 
 })
+router.get('/logout', async (req, res) => {
+prisma.$disconnect()
+})
 router.post('/register', async (req, res) => {
   const { prenom, mot_de_passe, email } = req.body
   let date_de_naissance = req.body.date_de_naissance
