@@ -54,41 +54,21 @@ io.on('connection', (socket) => {
     console.log(`Connecté à la room  ${room}`)
   })
   socket.on('message', (msg) => {
-    io.to(room).emit('message', msg);
+    console.log('message' + room)
+    socket.on('notification', (data) => {
+      console.log(data)
+      socket.to(room).emit('notification', data, room)
+    })
+    io.to(room).emit('message', msg, room);
+  })
+  socket.on('modal', (data) => {
+    io.to(room).emit('modal', data);
   })
   socket.on('joinRoom', (data) => {
-    socket.leave(room);
-    const clients1 = io.sockets.adapter.rooms.get(room);
-    console.log(clients1)
-    console.log(data)
     room = data
+    console.log('join' + room)
     socket.join(room)
-    const clients2 = io.sockets.adapter.rooms.get(room);
-    console.log(clients2)
   })
-  //socket.emit('id',socket.id);
-  // socket.on('message', (msg) =>{
-  //   console.log('jjj'+ id_user)
-  //   io.to(room).emit('message', msg);
-  //   console.log('message: ' + msg);
-  // })
-  // const clients2 = io.sockets.adapter.rooms.get(room);
-  // const clients = io.sockets.adapter.rooms.get(room).size;
-  // console.log(clients)
-  // console.log(clients2)
-
-  //Limiter les rooms en nombres d'utilisateurs
-
-  // if (clients === 1){
-  //   socket.join(room);
-  // } else if (clients === 2) {
-  //   socket.join(room);
-  // } else { // max two clients
-  //   console.log("tes la")
-  //   socket.disconnect()
-  //   console.log(clients2)
-  // }
-  //   console.log(`Connecté à la room  ${room}`)
 
 })
 
